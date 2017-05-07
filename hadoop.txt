@@ -1,0 +1,280 @@
+
+Bigdata:
+	
+	结构化数据：约束
+	半结构化数据：
+	非结构化数据：没有元数据：
+
+	搜索引擎：搜索组件、索引组件
+		蜘蛛程序：
+
+		存储：
+		分析处理：
+
+			2003年：The Google File System
+			2004年：MapReduce：Simplified Data Processing On Large Cluster
+			2006年：BigTable：A Distributed Storge System for Structure Data
+
+			HDFS+MapReduce = Hadoop
+			HBase
+
+			Nutch
+
+			批处理：
+
+NAS,SAN
+DN：DataNode
+NN：NameNode
+SNN：Secondary NameNode  
+JobTracker
+TaskTracker
+
+			函数式编程：
+				Lisp，ML 函数式编程语言：高阶函数；
+					map，fold
+
+						map：
+							map(f())
+							map：接受一个函数为参数，并将其应用于列表中的所有元素；从而生成一个结果列表；
+							"Ou Yangfeng","Dongfang Bubai","Sao Diseng","Dugu Qiubai"
+
+						fold:
+							接受两个参数：函数，初始值
+								fold(g(),init)
+									"Hamo Gong","Kuihua Baodian","Yi Jinjing","Dugu Jiujian"
+										second 			third
+
+									Kuihua Baodian
+
+				mapreduce:
+
+					mapper,reducer,
+
+						统计一本书每个单词出现的次数；
+							mapper：每100页一个单位，5 mappers
+								用于拆分成为单词；10000000
+							reducer：
+								reducer1，reducer2
+									this 500
+									is 20
+
+									how 301
+									do 32
+
+							shuffle and sort
+						mapper:
+							k-v
+							this 1 ,is 1,this 1 ,how 1
+							
+							同一个键只能发往一个reducer
+
+						reducer：
+							this 500
+							is 20
+
+					MRv1(Hadoop1) --> MRv2(Hadoop)
+						MRv1:Cluster resource manager,Data processing
+						MRv2:
+							YARN：Cluster resource manager 
+							MRv2：Data Processing
+								MR：batch
+								Tez：execution engine
+
+							RM：Resource Manager
+							NM：Node Manager 
+							
+							AM：Application Master 
+							container：mr任务
+
+
+					Hadoop Distribution
+						Cloudera：CDH
+						Hortonworks：HDP
+						Interl：IDH
+						MapR：
+
+回顾：
+	Hadoop：存储处理平台
+		HDFS：集群，NN(name node),DN(data node),SNN(secondary name node)
+		mapreduce：集群，JobTracker，TaskTracker
+			任务：map，reduce
+
+		YARN：
+			RM,NM,AM
+			container 
+
+
+Hadoop(2)
+	
+	单机模型：测试使用；
+	伪分布式模型：运行于单机；
+	分布式模型：集群模型
+
+	Hadoop：基于Java语言；
+		jdk：1.6,1.7,1.8
+			Hadoop-2.6.2 jdk 1.6+
+			Hadoop-2.7 jdk 1.7+
+
+
+ 			export HADOOP_PRIFIX=/bdapps/hadoop
+ 			export PATH=$PATH:$HADOOP_PRIFIX/bin:$HADOOP_PRIFIX/sbin
+ 			export HADOOP_YARN_HOME=$HADOOP_PRIFIX
+ 			export HADOOP_MAPPERD_HOME=$HADOOP_PRIFIX
+ 			export HADOOP_COMMON_HOME=$HADOOP_PRIFIX
+ 			export HADOOP_HDFS_HOME=$HADOOP_PRIFIX
+
+
+
+	core-site.xml
+
+		<configuration>
+		    <property>
+		        <name>fs.defaultFS</name>
+		        <value>hdfs://localhost:8020</value>
+		        <final>true</final>
+		    </property>
+		</configuration>
+
+	hdfs-site.xml
+
+		<configuration>
+		    <property>
+		        <name>dfs.replication</name>
+		        <value></value>
+		    </property>
+		    <property>
+		        <name>dfs.namenode.name.dir</name>
+		        <value>file:///data/hadoop/hdfs/nn</value>
+		    </property>
+		    <property>
+		        <name>dfs.datanode.data.dir</name>
+		        <value>file:///data/hadoop/hdfs/dn</value>
+		    </property>
+		    <property>
+		        <name>fs.checkpoint.dir</name>
+		        <value>file:///data/hadoop/hdfs/snn</value>
+		    </property>
+		    <property>
+		        <name>fs.chechpoint.edits.dir</name>
+		        <value>file:///data/hadoop/hdfs/snn</value>
+		    </property>
+		</configuration>
+
+	mapred-site.xml
+		
+		<configuration>
+		    <property>
+		        <name>mapreduce.framework.name</name>
+		        <value>yarn</value>
+		    </property>
+
+		</configuration>
+
+	yarn-site.xml
+
+		<configuration>
+
+		<!-- Site specific YARN configuration properties -->
+		    <property>
+		        <name>yarn.resourcemanager.address</name>
+		        <value>localhost:8032</value>
+		    </property>
+		    <property>
+		        <name>yarn.resourcemanager.scheduler.address</name>
+		        <value>localhost:8030</value>
+		    </property>
+		    <property>
+		        <name>yarn.resourcemanager.resourcetracker.address</name>
+		        <value>localhost:8031</value>
+		    </property>
+		    <property>
+		        <name>yarn.resourcemanager.admin.address</name>
+		        <value>localhost:8033</value>
+		    </property>
+		    <property>
+		        <name>yarn.resourcemanager.webapp.address</name>
+		        <value>localhost:8088</value>
+		    </property>
+		    <property>
+		        <name>yarn.nodemanager.aux-service</name>
+		        <value>mapreduce_shuffle</value>
+		    </property>
+		    <property>
+		        <name>yarn.nodemanager.auxservices.mapreduce_shuffle.class</name>        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+		    </property>
+		    <property>
+		        <name>yarn.resourcemanager.sheduler.class</name>
+		        <value>org.apache.hadoop.yarn.service.resourcemanager.shedule.capacity.CapacityScheduler</value>
+		    </property>
+
+		</configuration>
+
+
+			User Commands
+				classpath
+				dfs
+				fetchdt
+				fsck
+				getconf
+				groups
+				lsSnapshottableDir
+				jmxget
+				oev
+				oiv
+				oiv_legacy
+				snapshotDiff
+				version
+			Administration Commands
+				balancer
+				cacheadmin
+				crypto
+				datanode
+				dfsadmin
+				haadmin
+				journalnode
+				mover
+				namenode
+				nfs3
+				portmap
+				secondarynamenode
+				storagepolicies
+				zkfc
+			Debug Commands
+				verifyMeta
+				computeMeta
+				recoverLease
+
+	Hadoop Cluster中Daemon：
+		HDFS:
+			NameNode,NN
+			SecondaryNameNode,SNN
+			DataNode,DN
+
+				/data/hadoop/{nn,snn,dn}
+					nn:fsimage,editlog
+
+			hadoop-daemon.sh start|stop
+
+
+		YARN:
+			ResourceManager
+			NodeManager
+
+			yarn-daemon.sh start|stop
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

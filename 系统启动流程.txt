@@ -1,0 +1,9 @@
+BIOS
+MBR
+BootLoader
+加载内核
+inittab
+rc.sysinit
+rc*.d
+rc.local
+login

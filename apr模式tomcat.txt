@@ -1,0 +1,63 @@
+1、配置好yum源，路由。
+2、准备好源码包，所有源码包统一放在root家目录下
+	apache-tomcat-7.0.75.tar.gz
+	apr-1.5.2.tar.gz
+	apr-util-1.5.4.tar.gz
+	jdk-7u80-linux-x64.tar.gz
+	openssl-1.1.0e.tar.gz
+
+
+3、安装开发包组
+	yum groupinstall "Development tools" -y
+4、apr 安装
+	tar zxf apr-1.5.2.tar.gz -C /usr/local/src/
+	cd /usr/local/src/apr-1.5.2/
+	./configure --prefix=/usr/local/apr && make && make install
+5、apr-utils 安装
+	tar zxf apr-util-1.5.4.tar.gz -C /usr/local/src/
+	cd /usr/local/src/apr-util-1.5.4/
+	./configure --with-apr=/usr/local/apr/ --prefix=/usr/local/apr-utils && make && make install 
+
+6、jdk安装
+	tar xvf jdk-7u80-linux-x64.tar.gz -C /usr/local/
+	cd /usr/local/
+  	ln -s jdk1.7.0_80/ ./java
+7、openssl安装
+	tar xvf openssl-1.1.0e.tar.gz 
+	cd openssl-1.1.0e
+	./config --prefix=/usr/local/openssl && make && make install
+8、添加环境变量
+	vim /etc/profile
+	添加以下内容
+	JAVA_HOME=/usr/local/java
+	JAVA_BIN=$JAVA_HOME/bin
+	PATH=$PATH:$JAVA_BIN
+	CLASSPATH=$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+	export JAVA_HOME JAVA_BIN PATH CLASSPATH
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/apr/lib 
+	
+	source /etc/profile
+
+9、tomcat安装
+	tar xvf apache-tomcat-7.0.75.tar.gz -C /usr/local
+	cd /usr/local/apache-tomcat-7.0.75/bin
+	tar xvf tomcat-native.tar.gz 
+	cd tomcat-native-1.2.10-src/native
+	修改configure文件，将“openssldirs="/usr /usr/local /usr/local/ssl /usr/pkg /usr/sfw" 改为“ openssldirs="/usr/local/openssl /usr/local /usr/local/ssl /usr/pkg /usr/sfw"”
+
+	./configure && make && make install 
+10、添加manager/status用户
+	vim /usr/local/apache-tomcat-7.0.47/conf/tomcat-users.xml
+	<role rolename="manager-gui"/>       
+	<user username="tomcat" password="15715746746" roles="manager-gui"/>
+11、启动tomcat
+	cd /usr/local/apache-tomcat-7.0.75/bin
+	./catalina.sh start 
+
+	ss -tnl 可以看到8080 和8009端口已经打开
+
+12、test
+	http://192.168.71.102:8080/manager/status
+	输入账号密码
+
+

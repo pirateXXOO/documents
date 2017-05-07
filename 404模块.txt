@@ -1,0 +1,144 @@
+
+虚拟化运维工程师，20台
+数据量
+
+
+错误码
+		404模块
+		401权限失败
+		403拒绝访问
+		404无法找到文件
+		408超时
+		413请求体过大  （php有内存限制，
+		414请求URI过长
+		499
+		500服务器错误
+		501服务器不支持当前请求所需要的某个功能。当服务器无法识别请求的方法，并且无法支持其对任何资源的请求。
+		502作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应。连接失败
+		503由于临时的服务器维护或者过载，服务器当前无法处理请求。
+		504作为网关或者代理工作的服务器尝试执行请求时，未能及时从上游服务器（URI标识出的服务器，例如HTTP、FTP、LDAP）或者辅助服务器（例如DNS）收到响应。请求失败
+
+
+		200请求成功
+		206分块下载，服务器已经成功处理了部分GET请求。类似于FlashGet或者迅雷这类的HTTP 下载工具都是使用此类响应实现断点续传或者将一个大文档分解为多个下载段同时下载。
+		201压缩特殊处理
+
+		301永久重定向
+		302临时重定向
+		304如果客户端发送了一个带条件的GET请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变，则服务器应当返回这个状态码。
+
+数据库的停止方法，
+
+Linux启动/停止/重启Mysql数据库的方法
+
+	1、查看mysql版本
+		方法一：status;
+		方法二：select version();
+
+	2、Mysql启动、停止、重启常用命令
+		a、启动方式
+			1、使用 service 启动：
+			[root@localhost /]# service mysqld start (5.0版本是mysqld)
+			[root@szxdb etc]# service mysql start (5.5.7版本是mysql)
+
+			2、使用 mysqld 脚本启动：
+			/etc/inint.d/mysqld start
+
+			3、使用 safe_mysqld 启动：
+			safe_mysqld&
+
+		b、停止
+			1、使用 service 启动：
+			service mysqld stop
+
+			2、使用 mysqld 脚本启动：
+			/etc/init.d/mysqld stop
+
+			3、mysqladmin shutdown
+
+		c、重启
+			1、使用 service 启动：
+			service mysqld restart 
+			service mysql restart (5.5.7版本命令)
+
+			2、使用 mysqld 脚本启动：
+			/etc/init.d/mysqld restart
+
+完全恢复和不完全恢复
+	Oracle 数据库可以实现数据库不完全恢复与完全恢复。完全恢复是将数据库恢复到最新时刻，也就是无损恢复，保证数据库无丢失的恢复。而不完全恢复则是根据需要特意将数据库恢复到某个过去的特定时间点或特定的SCN以及特定的Sequence。
+
+同步复制，半同步复制
+	异步复制（Asynchronous replication）
+
+		MySQL默认的复制即是异步的，主库在执行完客户端提交的事务后会立即将结果返给给客户端，并不关心从库是否已经接收并处理，这样就会有一个问题，主如果crash掉了，此时主上已经提交的事务可能并没有传到从上，如果此时，强行将从提升为主，可能导致新主上的数据不完整。
+
+	全同步复制（Fully synchronous replication）
+
+		指当主库执行完一个事务，所有的从库都执行了该事务才返回给客户端。因为需要等待所有从库执行完该事务才能返回，所以全同步复制的性能必然会收到严重的影响。 
+
+	半同步复制（Semisynchronous replication）
+
+		介于异步复制和全同步复制之间，主库在执行完客户端提交的事务后不是立刻返回给客户端，而是等待至少一个从库接收到并写到relay log中才返回给客户端。相对于异步复制，半同步复制提高了数据的安全性，同时它也造成了一定程度的延迟，这个延迟最少是一个TCP/IP往返的时间。所以，半同步复制最好在低延时的网络中使用。
+
+MySQL慢查询日志
+	set global slow_query_log=1;
+redis持久化 
+rdb
+aofs
+#  In the example below the behaviour will be to save:
+#  after 900 sec (15 min) if at least 1 key changed
+#  after 300 sec (5 min) if at least 10 keys changed
+#  after 60 sec if at least 10000 keys changed
+
+save 900 1
+save 300 10
+save 60 10000
+
+Nginx日志切割
+
+
+reids增加内存：
+
+	redis 127.0.0.1:6379> config get maxmemory
+	1) "maxmemory"
+	2) "3221225472"
+	redis 127.0.0.1:6379> config set maxmemory 4294967296
+	OK
+	redis 127.0.0.1:6379> config get maxmemory
+	1) "maxmemory"
+	2) "4294967296"
+
+
+fastcgi-timeout  502，fastcgi-readtimeout  504，fastcgi-sendtimeout 504（5-10-10）client temp file。。。413/408
+
+
+Nginx重定向，伪静态，防盗链，（geoip），负载均衡，动静分离，虚拟主机，https。
+
+tcp连接状态
+	LISTENING：侦听来自远方的TCP端口的连接请求. 
+	SYN-RECEIVED：服务器端状态SYN_RCVD
+	ESTABLISHED：代表一个打开的连接。
+	FIN-WAIT-1：等待远程TCP连接中断请求，或先前的连接中断请求的确认
+	FIN-WAIT-2：从远程TCP等待连接中断请求
+	CLOSE-WAIT：等待从本地用户发来的连接中断请求
+	CLOSING：等待远程TCP对连接中断的确认
+	LAST-ACK：等待原来的发向远程TCP的连接中断请求的确认
+	TIME-WAIT：等待足够的时间以确保远程TCP接收到连接中断请求的确认
+	CLOSED：没有任何连接状态
+
+	客户端的状态可以用如下的流程来表示：
+        CLOSED->SYN_SENT->ESTABLISHED->FIN_WAIT_1->FIN_WAIT_2->TIME_WAIT->CLOSED
+	 服务器的状态可以用如下的流程来表示：
+         CLOSED->LISTEN->SYN收到->ESTABLISHED->CLOSE_WAIT->LAST_ACK->CLOSED
+
+lvs和haproxy的区别
+
+
+异地视频负载均衡
+
+find
+
+netstat
+
+lsof
+
